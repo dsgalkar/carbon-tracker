@@ -1,0 +1,4 @@
+/* App specific overrides */
+.app-content {
+  animation: fadeIn 0.5s ease;
+}
