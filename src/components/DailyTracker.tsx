@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { useCarbon, AVAILABLE_ACTIONS } from '../context/CarbonContext';
-import { 
-  Bike, Utensils, Droplets, Wind, Power, Trash2, 
+import { useCarbon } from '../context/CarbonContext';
+import { AVAILABLE_ACTIONS } from '../constants/carbonData'; import {
+  Bike, Utensils, Droplets, Wind, Power, Trash2,
   ShoppingBag, Lightbulb, Coffee, Flame, CheckCircle2,
   Calendar
 } from 'lucide-react';
 
 export const DailyTracker: React.FC = () => {
   const { dailyLogs, toggleAction, streak, getDailyOffsetForDate } = useCarbon();
-  
+
   // Create date selections for the last 3 days
   const getDates = () => {
     const dates = [];
@@ -16,14 +16,14 @@ export const DailyTracker: React.FC = () => {
       const d = new Date();
       d.setDate(d.getDate() - i);
       const str = d.toISOString().split('T')[0];
-      
+
       let label = 'Today';
       if (i === 1) label = 'Yesterday';
       if (i === 2) {
         // Format day of week
         label = d.toLocaleDateString('en-US', { weekday: 'short' });
       }
-      
+
       dates.push({ dateStr: str, label });
     }
     return dates;
@@ -41,18 +41,18 @@ export const DailyTracker: React.FC = () => {
   const getIcon = (iconName: string, active: boolean) => {
     const size = 20;
     const color = active ? 'var(--color-primary)' : 'var(--text-secondary)';
-    
+
     switch (iconName) {
-      case 'bike': return <Bike size={size} style={{ color }} />;
-      case 'salad': return <Utensils size={size} style={{ color }} />;
-      case 'shower': return <Droplets size={size} style={{ color }} />;
-      case 'wind': return <Wind size={size} style={{ color }} />;
-      case 'power': return <Power size={size} style={{ color }} />;
-      case 'trash': return <Trash2 size={size} style={{ color }} />;
-      case 'shopping-bag': return <ShoppingBag size={size} style={{ color }} />;
-      case 'lightbulb': return <Lightbulb size={size} style={{ color }} />;
-      case 'cup-soda': return <Coffee size={size} style={{ color }} />;
-      default: return <CheckCircle2 size={size} style={{ color }} />;
+      case 'bike': return <Bike size={size} style={{ color }} aria-hidden="true" />;
+      case 'salad': return <Utensils size={size} style={{ color }} aria-hidden="true" />;
+      case 'shower': return <Droplets size={size} style={{ color }} aria-hidden="true" />;
+      case 'wind': return <Wind size={size} style={{ color }} aria-hidden="true" />;
+      case 'power': return <Power size={size} style={{ color }} aria-hidden="true" />;
+      case 'trash': return <Trash2 size={size} style={{ color }} aria-hidden="true" />;
+      case 'shopping-bag': return <ShoppingBag size={size} style={{ color }} aria-hidden="true" />;
+      case 'lightbulb': return <Lightbulb size={size} style={{ color }} aria-hidden="true" />;
+      case 'cup-soda': return <Coffee size={size} style={{ color }} aria-hidden="true" />;
+      default: return <CheckCircle2 size={size} style={{ color }} aria-hidden="true" />;
     }
   };
 
@@ -68,17 +68,17 @@ export const DailyTracker: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }} className="app-content animate-fade-in">
-      
+
       {/* Tracker Header Widget */}
       <div style={{
-        display: 'flex', flexWrap: 'wrap', justifySelf: 'stretch', justifyContent: 'space-between', 
-        alignItems: 'center', gap: '1.5rem', background: 'var(--bg-card)', 
+        display: 'flex', flexWrap: 'wrap', justifySelf: 'stretch', justifyContent: 'space-between',
+        alignItems: 'center', gap: '1.5rem', background: 'var(--bg-card)',
         border: '1px solid var(--border-glass)', borderRadius: 'var(--radius-md)', padding: '1.5rem'
       }}>
         {/* Date pills */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Calendar size={14} /> Select Logging Date
+            <Calendar size={14} aria-hidden="true" /> Select Logging Date
           </span>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             {dateSelections.map((item) => (
@@ -109,13 +109,13 @@ export const DailyTracker: React.FC = () => {
           {/* Streak Status */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{
-              width: '45px', height: '45px', borderRadius: '50%', 
+              width: '45px', height: '45px', borderRadius: '50%',
               background: streak > 0 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(255, 255, 255, 0.03)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               border: `1px solid ${streak > 0 ? 'rgba(245, 158, 11, 0.2)' : 'var(--border-glass)'}`,
               color: streak > 0 ? 'var(--color-warning)' : 'var(--text-muted)'
             }}>
-              <Flame size={22} style={{ filter: streak > 0 ? 'drop-shadow(0 0 5px var(--color-warning))' : 'none' }} />
+              <Flame size={22} aria-hidden="true" style={{ filter: streak > 0 ? 'drop-shadow(0 0 5px var(--color-warning))' : 'none' }} />
             </div>
             <div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '600' }}>
@@ -138,21 +138,25 @@ export const DailyTracker: React.FC = () => {
           </p>
         </div>
 
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-          gap: '1rem' 
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '1rem'
         }}>
           {AVAILABLE_ACTIONS.map((action) => {
             const isChecked = activeActions.includes(action.id);
-            
+
             return (
               <div
                 key={action.id}
                 className={`glass-card ${isChecked ? 'active' : ''}`}
                 onClick={() => toggleAction(selectedDate, action.id)}
-                style={{ 
-                  cursor: 'pointer', display: 'flex', gap: '1rem', 
+                onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleAction(selectedDate, action.id); } }}
+                role="checkbox"
+                aria-checked={isChecked}
+                tabIndex={0}
+                style={{
+                  cursor: 'pointer', display: 'flex', gap: '1rem',
                   alignItems: 'flex-start', padding: '1.2rem',
                   position: 'relative'
                 }}
@@ -186,7 +190,7 @@ export const DailyTracker: React.FC = () => {
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', lineHeight: '1.4' }}>
                     {action.description}
                   </p>
-                  
+
                   {/* Action Badges/Tags */}
                   <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                     <span style={{
@@ -212,8 +216,8 @@ export const DailyTracker: React.FC = () => {
       </div>
 
       {/* Motivation Tip */}
-      <div style={{ 
-        background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--border-glass)', 
+      <div style={{
+        background: 'rgba(255,255,255,0.01)', border: '1px dashed var(--border-glass)',
         borderRadius: 'var(--radius-md)', padding: '1.2rem', textAlign: 'center',
         color: 'var(--text-secondary)', fontSize: '0.85rem'
       }}>

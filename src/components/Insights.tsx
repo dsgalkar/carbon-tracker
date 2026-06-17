@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCarbon } from '../context/CarbonContext';
 import {
-  DollarSign, Leaf, Sparkles,
+  IndianRupee, Leaf, Sparkles,
   ArrowRight, CheckCircle2
 } from 'lucide-react';
 
@@ -48,7 +48,7 @@ export const Insights: React.FC = () => {
       const evFactor = carFactors['electric'];
       const annualCarMiles = calculatorData.carKm * 52;
       savedKg += annualCarMiles * (currentFactor - evFactor);
-      savedMoney += annualCarMiles * 0.12; // estimate 12c saved per mile on fuel vs charging
+      savedMoney += annualCarMiles * 8; // estimate ₹8 saved per km on fuel vs charging
     }
 
     // Simulator: Drive 50% less
@@ -56,7 +56,7 @@ export const Insights: React.FC = () => {
       const currentFactor = carFactors[simEV ? 'electric' : calculatorData.carType];
       const annualCarMiles = calculatorData.carKm * 52;
       savedKg += (annualCarMiles * 0.5) * currentFactor;
-      savedMoney += (annualCarMiles * 0.5) * 0.15; // fuel/maintenance cost savings
+      savedMoney += (annualCarMiles * 0.5) * 10; // fuel/maintenance cost savings in INR
     }
 
     // Simulator: Switch to Vegetarian/Vegan
@@ -66,7 +66,7 @@ export const Insights: React.FC = () => {
       const targetDietEmissions = dietMap['vegetarian']; // Assume vegetarian for standard simulation
       if (currentDietEmissions > targetDietEmissions) {
         savedKg += (currentDietEmissions - targetDietEmissions);
-        savedMoney += 350; // Average grocery bill savings per year on meat alternatives
+        savedMoney += 30000; // Average grocery bill savings per year on meat alternatives in INR
       }
     }
 
@@ -76,13 +76,13 @@ export const Insights: React.FC = () => {
       const electricEmissions = calculatorData.electricityKwh * 12 * 0.38;
       const gasEmissions = calculatorData.gasBill * 12 * 2.5;
       savedKg += (electricEmissions + gasEmissions) * 0.75;
-      savedMoney += (calculatorData.electricityKwh * 12 * 0.15 + calculatorData.gasBill * 12) * 0.75; // utility bill savings
+      savedMoney += (calculatorData.electricityKwh * 12 * 8 + calculatorData.gasBill * 12) * 0.75; // utility bill savings in INR
     }
 
     // Simulator: No flights
     if (simNoFlights) {
       savedKg += calculatorData.flightsShort * 220 + calculatorData.flightsLong * 950;
-      savedMoney += (calculatorData.flightsShort * 150 + calculatorData.flightsLong * 600); // flight ticket savings
+      savedMoney += (calculatorData.flightsShort * 8000 + calculatorData.flightsLong * 45000); // flight ticket savings in INR
     }
 
     const savedTons = Number((savedKg / 1000).toFixed(2));
@@ -129,7 +129,7 @@ export const Insights: React.FC = () => {
         {/* Dynamic Action List */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '0.5rem' }}>
           {[
-            { title: 'Short commutive switches', detail: 'Using a bicycle or walking for journeys under 2 miles cuts up to 300kg of CO2 per year.' },
+            { title: 'Short commutive switches', detail: 'Using a bicycle or walking for journeys under 3 km cuts up to 300kg of CO2 per year.' },
             { title: 'Smart thermostat control', detail: 'Lowering household heating by just 1°C reduces annual energy footprints by 10%.' },
             { title: 'Incorporate Meatless Days', detail: 'Skipping beef or pork one day a week saves roughly 200kg of CO2 emissions annually.' }
           ].map((item, idx) => (
@@ -165,6 +165,10 @@ export const Insights: React.FC = () => {
               <div
                 className={`glass-card ${simEV ? 'active' : ''}`}
                 onClick={() => setSimEV(!simEV)}
+                onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSimEV(!simEV); } }}
+                role="switch"
+                aria-checked={simEV}
+                tabIndex={0}
                 style={{ cursor: 'pointer', display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: '1rem' }}
               >
                 <div>
@@ -190,6 +194,10 @@ export const Insights: React.FC = () => {
               <div
                 className={`glass-card ${simDriveLess ? 'active' : ''}`}
                 onClick={() => setSimDriveLess(!simDriveLess)}
+                onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSimDriveLess(!simDriveLess); } }}
+                role="switch"
+                aria-checked={simDriveLess}
+                tabIndex={0}
                 style={{ cursor: 'pointer', display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: '1rem' }}
               >
                 <div>
@@ -215,6 +223,10 @@ export const Insights: React.FC = () => {
               <div
                 className={`glass-card ${simDiet ? 'active' : ''}`}
                 onClick={() => setSimDiet(!simDiet)}
+                onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSimDiet(!simDiet); } }}
+                role="switch"
+                aria-checked={simDiet}
+                tabIndex={0}
                 style={{ cursor: 'pointer', display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: '1rem' }}
               >
                 <div>
@@ -239,6 +251,10 @@ export const Insights: React.FC = () => {
             <div
               className={`glass-card ${simSolar ? 'active' : ''}`}
               onClick={() => setSimSolar(!simSolar)}
+              onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSimSolar(!simSolar); } }}
+              role="switch"
+              aria-checked={simSolar}
+              tabIndex={0}
               style={{ cursor: 'pointer', display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: '1rem' }}
             >
               <div>
@@ -263,6 +279,10 @@ export const Insights: React.FC = () => {
               <div
                 className={`glass-card ${simNoFlights ? 'active' : ''}`}
                 onClick={() => setSimNoFlights(!simNoFlights)}
+                onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setSimNoFlights(!simNoFlights); } }}
+                role="switch"
+                aria-checked={simNoFlights}
+                tabIndex={0}
                 style={{ cursor: 'pointer', display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'center', padding: '1rem' }}
               >
                 <div>
@@ -331,12 +351,12 @@ export const Insights: React.FC = () => {
                   width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(6, 182, 212, 0.1)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-secondary)'
                 }}>
-                  <DollarSign size={18} />
+                  <IndianRupee size={18} />
                 </div>
                 <div>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Estimated Financial Savings</span>
                   <span style={{ fontSize: '0.95rem', fontWeight: '600', color: 'var(--color-secondary)' }}>
-                    Save ~${sim.savedMoney.toLocaleString()} / year
+                    Save ~₹{sim.savedMoney.toLocaleString()} / year
                   </span>
                 </div>
               </div>

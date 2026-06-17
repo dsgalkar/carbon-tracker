@@ -157,17 +157,17 @@ export const Calculator: React.FC = () => {
                 What type of vehicle do you drive?
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem' }}>
-                {[
+                {([
                   { id: 'none', label: 'No Car', icon: <Leaf size={20} /> },
                   { id: 'electric', label: 'Electric', icon: <Zap size={20} /> },
                   { id: 'hybrid', label: 'Hybrid', icon: <Compass size={20} /> },
                   { id: 'compact', label: 'Compact Gas', icon: <Car size={20} /> },
                   { id: 'suv', label: 'SUV/Truck', icon: <Car size={20} /> },
-                ].map((item) => (
+                ] as const).map((item) => (
                   <div
                     key={item.id}
                     className={`glass-card ${calculatorData.carType === item.id ? 'active' : ''}`}
-                    onClick={() => updateCalculator({ carType: item.id as any })}
+                    onClick={() => updateCalculator({ carType: item.id })}
                     style={{
                       cursor: 'pointer', textAlign: 'center', padding: '1rem',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem'
@@ -201,8 +201,8 @@ export const Calculator: React.FC = () => {
                   className="glass-slider"
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                  <span>0 miles</span>
-                  <span>500 miles</span>
+                  <span>0 Km</span>
+                  <span>500 Km</span>
                 </div>
               </div>
             )}
@@ -300,16 +300,16 @@ export const Calculator: React.FC = () => {
                 What is your primary home heating source?
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem' }}>
-                {[
+                {([
                   { id: 'none', label: 'None/Solar', icon: <Leaf size={20} /> },
                   { id: 'electricity', label: 'Heat Pump', icon: <Zap size={20} /> },
                   { id: 'gas', label: 'Natural Gas', icon: <Flame size={20} /> },
                   { id: 'oil', label: 'Heating Oil', icon: <Flame size={20} /> },
-                ].map((item) => (
+                ] as const).map((item) => (
                   <div
                     key={item.id}
                     className={`glass-card ${calculatorData.heatingSource === item.id ? 'active' : ''}`}
-                    onClick={() => updateCalculator({ heatingSource: item.id as any })}
+                    onClick={() => updateCalculator({ heatingSource: item.id })}
                     style={{
                       cursor: 'pointer', textAlign: 'center', padding: '1rem',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem'
@@ -328,23 +328,23 @@ export const Calculator: React.FC = () => {
             {calculatorData.heatingSource === 'gas' && (
               <div className="animate-fade-in">
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.95rem', fontWeight: '500', color: 'var(--text-secondary)' }}>Monthly gas bill (est. USD):</span>
-                  <span style={{ fontWeight: '600', color: getSliderColor(calculatorData.gasBill, 150) }}>
-                    ${calculatorData.gasBill} / month
+                  <span style={{ fontSize: '0.95rem', fontWeight: '500', color: 'var(--text-secondary)' }}>Monthly gas bill (est. INR):</span>
+                  <span style={{ fontWeight: '600', color: getSliderColor(calculatorData.gasBill, 10000) }}>
+                    ₹{calculatorData.gasBill.toLocaleString()} / month
                   </span>
                 </div>
                 <input
                   type="range"
                   min="0"
-                  max="150"
-                  step="5"
+                  max="10000"
+                  step="100"
                   value={calculatorData.gasBill}
                   onChange={(e) => updateCalculator({ gasBill: parseInt(e.target.value) })}
                   className="glass-slider"
                 />
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-                  <span>$0</span>
-                  <span>$150+</span>
+                  <span>₹0</span>
+                  <span>₹10,000+</span>
                 </div>
               </div>
             )}
@@ -360,16 +360,16 @@ export const Calculator: React.FC = () => {
                 Which best describes your diet?
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem' }}>
-                {[
+                {([
                   { id: 'vegan', label: '🌱 Vegan', desc: 'No animal products' },
                   { id: 'vegetarian', label: '🥚 Vegetarian', desc: 'Dairy/eggs, no meat' },
                   { id: 'low-meat', label: '🍗 Flexitarian', desc: 'Occasional meat' },
                   { id: 'high-meat', label: '🥩 Meat Lover', desc: 'Frequent beef/pork' },
-                ].map((item) => (
+                ] as const).map((item) => (
                   <div
                     key={item.id}
                     className={`glass-card ${calculatorData.diet === item.id ? 'active' : ''}`}
-                    onClick={() => updateCalculator({ diet: item.id as any })}
+                    onClick={() => updateCalculator({ diet: item.id })}
                     style={{
                       cursor: 'pointer', padding: '1.2rem 1rem',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', textAlign: 'center'
@@ -389,15 +389,15 @@ export const Calculator: React.FC = () => {
                 How much food gets thrown away in your household?
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem' }}>
-                {[
+                {([
                   { id: 'minimal', label: 'Minimal', desc: 'Eat leftovers, compost' },
                   { id: 'average', label: 'Average', desc: 'Standard waste' },
                   { id: 'high', label: 'Significant', desc: 'Throw out expired food' },
-                ].map((item) => (
+                ] as const).map((item) => (
                   <div
                     key={item.id}
                     className={`glass-card ${calculatorData.waste === item.id ? 'active' : ''}`}
-                    onClick={() => updateCalculator({ waste: item.id as any })}
+                    onClick={() => updateCalculator({ waste: item.id })}
                     style={{
                       cursor: 'pointer', padding: '1rem',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', textAlign: 'center'
@@ -421,15 +421,15 @@ export const Calculator: React.FC = () => {
                 How would you describe your clothing and general shopping habits?
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem' }}>
-                {[
+                {([
                   { id: 'minimalist', label: 'Minimalist', desc: 'Rare purchases, high durability' },
                   { id: 'average', label: 'Standard', desc: 'Seasonal purchases, moderate' },
                   { id: 'shopper', label: 'Avid Shopper', desc: 'Frequent fast fashion/items' },
-                ].map((item) => (
+                ] as const).map((item) => (
                   <div
                     key={item.id}
                     className={`glass-card ${calculatorData.shoppingHabits === item.id ? 'active' : ''}`}
-                    onClick={() => updateCalculator({ shoppingHabits: item.id as any })}
+                    onClick={() => updateCalculator({ shoppingHabits: item.id })}
                     style={{
                       cursor: 'pointer', padding: '1.2rem 1rem',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', textAlign: 'center'
@@ -449,15 +449,15 @@ export const Calculator: React.FC = () => {
                 How often do you replace phones, computers, or gadgets?
               </label>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem' }}>
-                {[
+                {([
                   { id: 'rarely', label: 'Only if broken', desc: 'Keep devices 5+ years' },
                   { id: 'average', label: 'Standard Cycle', desc: 'Upgrade every 3-4 years' },
                   { id: 'frequently', label: 'Early Adopter', desc: 'Upgrade every 1-2 years' },
-                ].map((item) => (
+                ] as const).map((item) => (
                   <div
                     key={item.id}
                     className={`glass-card ${calculatorData.electronics === item.id ? 'active' : ''}`}
-                    onClick={() => updateCalculator({ electronics: item.id as any })}
+                    onClick={() => updateCalculator({ electronics: item.id })}
                     style={{
                       cursor: 'pointer', padding: '1.2rem 1rem',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', textAlign: 'center'

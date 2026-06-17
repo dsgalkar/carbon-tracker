@@ -1,5 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import type { CalculatorData, DailyAction, Badge, DailyLog } from '../types';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import type { CalculatorData, Badge, DailyLog } from '../types';
+import {
+  DEFAULT_CALCULATOR_DATA,
+  AVAILABLE_ACTIONS,
+  INITIAL_BADGES,
+} from '../constants/carbonData';
 
 interface CarbonContextProps {
   hasCalculated: boolean;
@@ -17,164 +22,6 @@ interface CarbonContextProps {
   getDailyOffsetForDate: (date: string) => number; // in kg
   resetData: () => void;
 }
-
-const DEFAULT_CALCULATOR_DATA: CalculatorData = {
-  carKm: 160,
-  carType: 'compact',
-  transitHours: 2,
-  flightsShort: 2,
-  flightsLong: 0,
-  electricityKwh: 300,
-  heatingSource: 'gas',
-  gasBill: 2500,
-  diet: 'low-meat',
-  waste: 'average',
-  shoppingHabits: 'average',
-  electronics: 'average',
-};
-
-export const AVAILABLE_ACTIONS: DailyAction[] = [
-  {
-    id: 'walk_cycle',
-    category: 'transport',
-    title: 'Walk or Cycle',
-    description: 'Walk or bike instead of driving a car for short trips.',
-    points: 25,
-    co2Offset: 2.4,
-    icon: 'bike',
-  },
-  {
-    id: 'plant_meal',
-    category: 'food',
-    title: 'Plant-Based Meal',
-    description: 'Eat a fully plant-based meal today (no meat or dairy).',
-    points: 20,
-    co2Offset: 1.5,
-    icon: 'salad',
-  },
-  {
-    id: 'shorter_shower',
-    category: 'energy',
-    title: 'Shorter Shower',
-    description: 'Limit your shower to under 5 minutes to save water and energy.',
-    points: 15,
-    co2Offset: 0.5,
-    icon: 'shower',
-  },
-  {
-    id: 'line_dry',
-    category: 'energy',
-    title: 'Line Dry Clothes',
-    description: 'Air dry laundry instead of using a high-energy tumble dryer.',
-    points: 15,
-    co2Offset: 0.8,
-    icon: 'wind',
-  },
-  {
-    id: 'unplug_idle',
-    category: 'energy',
-    title: 'Unplug Standby Devices',
-    description: 'Turn off power strips and unplug appliances not in use.',
-    points: 10,
-    co2Offset: 0.3,
-    icon: 'power',
-  },
-  {
-    id: 'no_food_waste',
-    category: 'waste',
-    title: 'Zero Food Waste',
-    description: 'Finish all meals and properly store leftovers to avoid throwing food away.',
-    points: 15,
-    co2Offset: 0.7,
-    icon: 'trash',
-  },
-  {
-    id: 'second_hand',
-    category: 'shopping',
-    title: 'Buy Second-Hand/Local',
-    description: 'Buy local produce or thrift clothing/items instead of new ones.',
-    points: 25,
-    co2Offset: 1.8,
-    icon: 'shopping-bag',
-  },
-  {
-    id: 'lights_off',
-    category: 'energy',
-    title: 'Smart Lighting',
-    description: 'Turn off lights when leaving rooms and use natural light when possible.',
-    points: 10,
-    co2Offset: 0.2,
-    icon: 'lightbulb',
-  },
-  {
-    id: 'reusable_cup',
-    category: 'waste',
-    title: 'Reusable Container',
-    description: 'Use reusable water bottles, coffee cups, or grocery bags today.',
-    points: 10,
-    co2Offset: 0.2,
-    icon: 'cup-soda',
-  },
-];
-
-const INITIAL_BADGES: Badge[] = [
-  {
-    id: 'first_calc',
-    title: 'Climate Conscious',
-    description: 'Complete the carbon footprint questionnaire.',
-    requirement: 'Questionnaire completed',
-    iconName: 'Compass',
-    unlocked: false,
-  },
-  {
-    id: 'first_action',
-    title: 'First Step',
-    description: 'Log your first green daily action.',
-    requirement: 'Log 1 daily action',
-    iconName: 'Footprints',
-    unlocked: false,
-  },
-  {
-    id: 'streak_3',
-    title: 'Eco Habit',
-    description: 'Maintain a 3-day active streak.',
-    requirement: '3-day streak',
-    iconName: 'Flame',
-    unlocked: false,
-  },
-  {
-    id: 'streak_7',
-    title: 'Climate Champion',
-    description: 'Maintain a 7-day active streak.',
-    requirement: '7-day streak',
-    iconName: 'Zap',
-    unlocked: false,
-  },
-  {
-    id: 'offset_10',
-    title: 'Carbon Cutter',
-    description: 'Offset a total of 10kg of CO2 emissions.',
-    requirement: '10kg offset',
-    iconName: 'Leaf',
-    unlocked: false,
-  },
-  {
-    id: 'offset_50',
-    title: 'Green Guardian',
-    description: 'Offset a total of 50kg of CO2 emissions.',
-    requirement: '50kg offset',
-    iconName: 'Shield',
-    unlocked: false,
-  },
-  {
-    id: 'diversity_hero',
-    title: 'Green All-Rounder',
-    description: 'Perform at least one action from all 5 categories.',
-    requirement: '5 categories logged',
-    iconName: 'Layers',
-    unlocked: false,
-  },
-];
 
 const CarbonContext = createContext<CarbonContextProps | undefined>(undefined);
 
@@ -200,10 +47,6 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return saved ? JSON.parse(saved) : INITIAL_BADGES;
   });
 
-  const [streak, setStreak] = useState<number>(0);
-  const [points, setPoints] = useState<number>(0);
-  const [co2OffsetTotal, setCo2OffsetTotal] = useState<number>(0);
-
   // Sync state to local storage when changed
   useEffect(() => {
     localStorage.setItem('carbon_has_calculated', JSON.stringify(hasCalculated));
@@ -221,12 +64,11 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     localStorage.setItem('carbon_badges', JSON.stringify(badges));
   }, [badges]);
 
-  // Recalculate totals, points, streaks, and check badges
-  useEffect(() => {
-    // 1. Calculate Total CO2 Offset and Points
+  // 1. Derived stats: Total CO2 Offset and Points
+  const { co2OffsetTotal, points } = useMemo(() => {
     let totalOffset = 0;
     let totalPoints = 0;
-    const actionIdsUsed = new Set<string>();
+    const ids = new Set<string>();
 
     dailyLogs.forEach((log) => {
       log.actions.forEach((actionId) => {
@@ -234,15 +76,20 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         if (action) {
           totalOffset += action.co2Offset;
           totalPoints += action.points;
-          actionIdsUsed.add(actionId);
+          ids.add(actionId);
         }
       });
     });
 
-    setCo2OffsetTotal(Number(totalOffset.toFixed(1)));
-    setPoints(totalPoints);
+    return {
+      co2OffsetTotal: Number(totalOffset.toFixed(1)),
+      points: totalPoints,
+      actionIdsUsed: ids,
+    };
+  }, [dailyLogs]);
 
-    // 2. Calculate Streaks (Consecutive days including today or ending yesterday)
+  // 2. Derived stats: Streak (Consecutive days including today or ending yesterday)
+  const streak = useMemo(() => {
     const activeDates = new Set(dailyLogs.filter(log => log.actions.length > 0).map(log => log.date));
     const sortedDates = Array.from(activeDates).sort();
 
@@ -257,7 +104,7 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       const lastLoggedDate = sortedDates[sortedDates.length - 1];
       if (lastLoggedDate === todayStr || lastLoggedDate === yesterdayStr) {
         currentStreak = 1;
-        let checkDate = new Date(lastLoggedDate);
+        const checkDate = new Date(lastLoggedDate);
 
         // Walk backwards to count consecutive days
         while (true) {
@@ -271,55 +118,99 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       }
     }
-    setStreak(currentStreak);
+    return currentStreak;
+  }, [dailyLogs]);
 
-    // 3. Process Badges triggers
-    let badgeTriggered = false;
-    const newBadges = badges.map((badge) => {
-      if (badge.unlocked) return badge;
+  // 3. Process Badges triggers based on state changes to avoid infinite loop
+  const checkAndUnlockBadges = (nextLogs: DailyLog[], hasCalc: boolean) => {
+    // 1. Calculate next co2OffsetTotal and actionIdsUsed
+    let totalOffset = 0;
+    const ids = new Set<string>();
+    nextLogs.forEach((log) => {
+      log.actions.forEach((actionId) => {
+        const action = AVAILABLE_ACTIONS.find((a) => a.id === actionId);
+        if (action) {
+          totalOffset += action.co2Offset;
+          ids.add(actionId);
+        }
+      });
+    });
+    const nextCo2OffsetTotal = Number(totalOffset.toFixed(1));
 
-      let shouldUnlock = false;
+    // 2. Calculate next streak
+    const activeDates = new Set(nextLogs.filter(log => log.actions.length > 0).map(log => log.date));
+    const sortedDates = Array.from(activeDates).sort();
+    let nextStreak = 0;
+    if (sortedDates.length > 0) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-      if (badge.id === 'first_calc' && hasCalculated) {
-        shouldUnlock = true;
-      } else if (badge.id === 'first_action' && dailyLogs.some((l) => l.actions.length > 0)) {
-        shouldUnlock = true;
-      } else if (badge.id === 'streak_3' && currentStreak >= 3) {
-        shouldUnlock = true;
-      } else if (badge.id === 'streak_7' && currentStreak >= 7) {
-        shouldUnlock = true;
-      } else if (badge.id === 'offset_10' && totalOffset >= 10) {
-        shouldUnlock = true;
-      } else if (badge.id === 'offset_50' && totalOffset >= 50) {
-        shouldUnlock = true;
-      } else if (badge.id === 'diversity_hero') {
-        const loggedCategories = new Set(
-          Array.from(actionIdsUsed).map((id) => AVAILABLE_ACTIONS.find((a) => a.id === id)?.category)
-        );
-        if (loggedCategories.size >= 5) {
-          shouldUnlock = true;
+      const lastLoggedDate = sortedDates[sortedDates.length - 1];
+      if (lastLoggedDate === todayStr || lastLoggedDate === yesterdayStr) {
+        nextStreak = 1;
+        const checkDate = new Date(lastLoggedDate);
+
+        while (true) {
+          checkDate.setDate(checkDate.getDate() - 1);
+          const checkDateStr = checkDate.toISOString().split('T')[0];
+          if (activeDates.has(checkDateStr)) {
+            nextStreak++;
+          } else {
+            break;
+          }
         }
       }
-
-      if (shouldUnlock) {
-        badgeTriggered = true;
-        // Trigger a confetti or custom notification
-        import('canvas-confetti').then((confetti) => {
-          confetti.default({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-          });
-        });
-        return { ...badge, unlocked: true };
-      }
-      return badge;
-    });
-
-    if (badgeTriggered) {
-      setBadges(newBadges);
     }
-  }, [dailyLogs, hasCalculated, badges]);
+
+    // 3. Update badges
+    setBadges((prevBadges) => {
+      let badgeTriggered = false;
+      const newBadges = prevBadges.map((badge) => {
+        if (badge.unlocked) return badge;
+
+        let shouldUnlock = false;
+
+        if (badge.id === 'first_calc' && hasCalc) {
+          shouldUnlock = true;
+        } else if (badge.id === 'first_action' && nextLogs.some((l) => l.actions.length > 0)) {
+          shouldUnlock = true;
+        } else if (badge.id === 'streak_3' && nextStreak >= 3) {
+          shouldUnlock = true;
+        } else if (badge.id === 'streak_7' && nextStreak >= 7) {
+          shouldUnlock = true;
+        } else if (badge.id === 'offset_10' && nextCo2OffsetTotal >= 10) {
+          shouldUnlock = true;
+        } else if (badge.id === 'offset_50' && nextCo2OffsetTotal >= 50) {
+          shouldUnlock = true;
+        } else if (badge.id === 'diversity_hero') {
+          const loggedCategories = new Set(
+            Array.from(ids).map((id) => AVAILABLE_ACTIONS.find((a) => a.id === id)?.category)
+          );
+          if (loggedCategories.size >= 5) {
+            shouldUnlock = true;
+          }
+        }
+
+        if (shouldUnlock) {
+          badgeTriggered = true;
+          // Trigger confetti
+          import('canvas-confetti').then((confetti) => {
+            confetti.default({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 }
+            });
+          });
+          return { ...badge, unlocked: true };
+        }
+        return badge;
+      });
+
+      return badgeTriggered ? newBadges : prevBadges;
+    });
+  };
 
   const updateCalculator = (data: Partial<CalculatorData>) => {
     setCalculatorData((prev) => ({ ...prev, ...data }));
@@ -327,30 +218,33 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const setCalculatorCompleted = () => {
     setHasCalculated(true);
+    checkAndUnlockBadges(dailyLogs, true);
   };
 
   const toggleAction = (date: string, actionId: string) => {
-    setDailyLogs((prevLogs) => {
-      const existingLogIdx = prevLogs.findIndex((log) => log.date === date);
+    const existingLogIdx = dailyLogs.findIndex((log) => log.date === date);
+    let nextLogs: DailyLog[];
 
-      if (existingLogIdx > -1) {
-        const existingLog = prevLogs[existingLogIdx];
-        const isActionLogged = existingLog.actions.includes(actionId);
+    if (existingLogIdx > -1) {
+      const existingLog = dailyLogs[existingLogIdx];
+      const isActionLogged = existingLog.actions.includes(actionId);
 
-        let newActions: string[];
-        if (isActionLogged) {
-          newActions = existingLog.actions.filter((id) => id !== actionId);
-        } else {
-          newActions = [...existingLog.actions, actionId];
-        }
-
-        const updatedLogs = [...prevLogs];
-        updatedLogs[existingLogIdx] = { ...existingLog, actions: newActions };
-        return updatedLogs.filter((log) => log.actions.length > 0); // remove empty logs
+      let newActions: string[];
+      if (isActionLogged) {
+        newActions = existingLog.actions.filter((id) => id !== actionId);
       } else {
-        return [...prevLogs, { date, actions: [actionId] }];
+        newActions = [...existingLog.actions, actionId];
       }
-    });
+
+      const updatedLogs = [...dailyLogs];
+      updatedLogs[existingLogIdx] = { ...existingLog, actions: newActions };
+      nextLogs = updatedLogs.filter((log) => log.actions.length > 0);
+    } else {
+      nextLogs = [...dailyLogs, { date, actions: [actionId] }];
+    }
+
+    setDailyLogs(nextLogs);
+    checkAndUnlockBadges(nextLogs, hasCalculated);
   };
 
   const getEmissionsByCategory = () => {
@@ -466,9 +360,6 @@ export const CarbonProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setCalculatorData(DEFAULT_CALCULATOR_DATA);
     setDailyLogs([]);
     setBadges(INITIAL_BADGES.map(b => ({ ...b, unlocked: false })));
-    setStreak(0);
-    setPoints(0);
-    setCo2OffsetTotal(0);
   };
 
   return (

@@ -95,7 +95,7 @@ export const Dashboard: React.FC = () => {
           }} />
           
           <div style={{ position: 'relative', width: '120px', height: '120px' }}>
-            <svg width="120" height="120" viewBox="0 0 120 120">
+            <svg width="120" height="120" viewBox="0 0 120 120" aria-hidden="true">
               {/* Background Circle */}
               <circle
                 cx="60"
@@ -148,7 +148,7 @@ export const Dashboard: React.FC = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-primary)',
             border: '1px solid rgba(16, 185, 129, 0.2)'
           }}>
-            <TreePine size={30} style={{ filter: 'drop-shadow(0 0 5px rgba(16, 185, 129, 0.3))' }} />
+            <TreePine size={30} aria-hidden="true" style={{ filter: 'drop-shadow(0 0 5px rgba(16, 185, 129, 0.3))' }} />
           </div>
           <div>
             <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: '600' }}>Offset Requirement</span>
@@ -166,7 +166,7 @@ export const Dashboard: React.FC = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-secondary)',
             border: '1px solid rgba(6, 182, 212, 0.2)'
           }}>
-            <TrendingDown size={30} style={{ filter: 'drop-shadow(0 0 5px rgba(6, 182, 212, 0.3))' }} />
+            <TrendingDown size={30} aria-hidden="true" style={{ filter: 'drop-shadow(0 0 5px rgba(6, 182, 212, 0.3))' }} />
           </div>
           <div>
             <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: '600' }}>Active Offsets</span>
@@ -196,7 +196,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.4rem' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                  <Car size={16} style={{ color: 'var(--color-secondary)' }} /> Transportation
+                  <Car size={16} aria-hidden="true" style={{ color: 'var(--color-secondary)' }} /> Transportation
                 </span>
                 <span style={{ fontWeight: '600' }}>
                   {Math.round(categories.transport).toLocaleString()} kg ({getPercentage(categories.transport)}%)
@@ -215,7 +215,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.4rem' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                  <Zap size={16} style={{ color: 'var(--color-primary)' }} /> Home Energy
+                  <Zap size={16} aria-hidden="true" style={{ color: 'var(--color-primary)' }} /> Home Energy
                 </span>
                 <span style={{ fontWeight: '600' }}>
                   {Math.round(categories.energy).toLocaleString()} kg ({getPercentage(categories.energy)}%)
@@ -234,7 +234,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.4rem' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                  <Utensils size={16} style={{ color: '#ec4899' }} /> Food Habits
+                  <Utensils size={16} aria-hidden="true" style={{ color: '#ec4899' }} /> Food Habits
                 </span>
                 <span style={{ fontWeight: '600' }}>
                   {Math.round(categories.food).toLocaleString()} kg ({getPercentage(categories.food)}%)
@@ -253,7 +253,7 @@ export const Dashboard: React.FC = () => {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.4rem' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: '500' }}>
-                  <ShoppingBag size={16} style={{ color: '#f59e0b' }} /> Shopping & Consumption
+                  <ShoppingBag size={16} aria-hidden="true" style={{ color: '#f59e0b' }} /> Shopping & Consumption
                 </span>
                 <span style={{ fontWeight: '600' }}>
                   {Math.round(categories.shopping).toLocaleString()} kg ({getPercentage(categories.shopping)}%)
@@ -279,7 +279,7 @@ export const Dashboard: React.FC = () => {
 
           {/* Custom SVG Chart */}
           <div style={{ width: '100%', position: 'relative' }}>
-            <svg width="100%" height="220" viewBox="0 0 400 220" preserveAspectRatio="none">
+            <svg width="100%" height="220" viewBox="0 0 400 220" preserveAspectRatio="none" role="img" aria-label="Global carbon footprint comparison bar chart">
               <defs>
                 {/* User bar gradient */}
                 <linearGradient id="userGrad" x1="0" y1="0" x2="1" y2="0">
@@ -362,7 +362,7 @@ export const Dashboard: React.FC = () => {
           borderColor: comparison.color, background: `${comparison.color}0a` 
         }}
       >
-        <AlertCircle size={22} style={{ color: comparison.color, flexShrink: 0 }} />
+        <AlertCircle size={22} aria-hidden="true" style={{ color: comparison.color, flexShrink: 0 }} />
         <div style={{ flex: 1 }}>
           <p style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: '500' }}>
             {comparison.text}
@@ -374,10 +374,10 @@ export const Dashboard: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
         <button 
           className="btn btn-secondary" 
-          onClick={resetData}
+          onClick={() => { if (window.confirm("Are you sure you want to reset all assessment and action tracking data? This cannot be undone.")) { resetData(); } }}
           style={{ fontSize: '0.85rem', gap: '0.4rem', color: 'var(--text-muted)' }}
         >
-          <RefreshCw size={14} /> Reset Assessment Data
+          <RefreshCw size={14} aria-hidden="true" /> Reset Assessment Data
         </button>
       </div>
 

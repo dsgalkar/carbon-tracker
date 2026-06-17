@@ -44,47 +44,55 @@ const AppContent: React.FC = () => {
       <header className="nav-header">
         <div className="nav-container">
           {/* Logo */}
-          <a href="#" className="nav-logo" onClick={() => setActiveTab('dashboard')}>
-            <Leaf size={24} />
+          <a href="#" className="nav-logo" onClick={(e) => { e.preventDefault(); setActiveTab('dashboard'); }}>
+            <Leaf size={24} aria-hidden="true" />
             <span>Eco<span className="gradient-text">Pulse</span></span>
           </a>
 
           {/* Navigation links */}
-          <nav className="nav-links">
+          <nav className="nav-links" role="tablist">
             <button 
               className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`}
               onClick={() => setActiveTab('dashboard')}
+              role="tab"
+              aria-selected={activeTab === 'dashboard'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <LayoutDashboard size={16} /> Dashboard
+                <LayoutDashboard size={16} aria-hidden="true" /> Dashboard
               </span>
             </button>
             <button 
               className={`nav-link ${activeTab === 'tracker' ? 'active' : ''}`}
               onClick={() => setActiveTab('tracker')}
+              role="tab"
+              aria-selected={activeTab === 'tracker'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <CalendarDays size={16} /> Action Log
+                <CalendarDays size={16} aria-hidden="true" /> Action Log
               </span>
             </button>
             <button 
               className={`nav-link ${activeTab === 'insights' ? 'active' : ''}`}
               onClick={() => setActiveTab('insights')}
+              role="tab"
+              aria-selected={activeTab === 'insights'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <LineChart size={16} /> Insights
+                <LineChart size={16} aria-hidden="true" /> Insights
               </span>
             </button>
             <button 
               className={`nav-link ${activeTab === 'milestones' ? 'active' : ''}`}
               onClick={() => setActiveTab('milestones')}
+              role="tab"
+              aria-selected={activeTab === 'milestones'}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Trophy size={16} /> Milestones
+                <Trophy size={16} aria-hidden="true" /> Milestones
               </span>
             </button>
           </nav>
